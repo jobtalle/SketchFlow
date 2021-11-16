@@ -4,68 +4,91 @@ const renderer = document.getElementById("renderer");
 renderer.width = wrapper.clientWidth;
 renderer.height = wrapper.clientHeight;
 
+const random = new Random();
 const width = renderer.width;
 const height = renderer.height;
 const context = renderer.getContext("2d");
-
+const radius = 777;
+const scale = Math.min(width, height) / (radius * 2);
 const gradient = context.createRadialGradient(
-    width * .5,
-    height * .5,
-    512,
-    width * .5,
-    height * .5,
-    Math.sqrt(1024 * 1024 + 1024 * 1024));
+    width * .5 / scale,
+    height * .5 / scale,
+    radius * .5,
+    width * .5 / scale,
+    height * .7 / scale,
+    Math.sqrt(radius * radius + radius * radius));
 
-gradient.addColorStop(0, "#ffcf76");
-gradient.addColorStop(0, "#501c1c");
-gradient.addColorStop(1, "#000000");
+const hue1 = random.getFloat() * 360;
+const hue2 = (hue1 + random.getFloat() * 80 + 120) % 360;
+const s = "30%";
+const l = "38%";
 
+gradient.addColorStop(0, "hsl(" + Math.round(hue1).toString() + ",50%," + l + ")");
+gradient.addColorStop(.003, "hsl(" + Math.round(hue2).toString() + "," + s + ",20%)");
+gradient.addColorStop(1, "hsl(" + Math.round(hue2).toString() + "," + s + ",1%)");
+
+context.scale(scale, scale);
 context.fillStyle = gradient;
-context.fillRect(0, 0, width, height);
+context.fillRect(0, 0, width / scale, height / scale);
+context.translate(width * .5 / scale, height * .5 / scale);
 
-const dropletCount = 300;
-const steps = 3000;
+const dropletCount = 400;
+const steps = 6000;
 const speed = 20;
-const noiseScale = .0027;
+const noiseScale = .0047;
+const ox = radius * 8 * random.getFloat();
+const oy = radius * 8 * random.getFloat();
 
-const xFlow = cubicNoiseConfig(fxrand());
-const yFlow = cubicNoiseConfig(fxrand());
+const xFlow = cubicNoiseConfig(random.getFloat());
+const yFlow = cubicNoiseConfig(random.getFloat());
 const droplets = [];
 
 for (let i = 0; i < dropletCount; ++i) {
     const f = i / (dropletCount - 1);
-    const r = 512;
+    const r = radius * .5;
 
     droplets.push(new Vector(
-        width * .5 + Math.cos(f * Math.PI * 2) * r,
-        height * .5 + Math.sin(f * Math.PI * 2) * r,
+        Math.cos(f * Math.PI * 2) * r,
+        Math.sin(f * Math.PI * 2) * r,
     ));
 }
 
+const overlay = context.createRadialGradient(0, 0, 0, 0, radius * -.05, radius * .55);
+
+overlay.addColorStop(.7, "#000000");
+overlay.addColorStop(1, "#ffffff");
+
+context.globalCompositeOperation = "lighten";
+context.fillStyle = overlay;
+context.beginPath();
+context.arc(0, 0, radius * .5, 0, Math.PI * 2);
+context.fill();
+
 context.lineCap = "round";
-context.lineWidth = 4;
+context.lineWidth = 5;
 
 for (const droplet of droplets) {
     context.beginPath();
     context.moveTo(droplet.x, droplet.y);
 
     for (let step = 0; step < steps; ++step) {
-        const shift = step * -.0;
-
         context.lineTo(droplet.x, droplet.y);
 
+        const x = droplet.x + ox;
+        const y = droplet.y + oy;
+
         const dx = cubicNoiseSample2(xFlow,
-            droplet.x * noiseScale + shift,
-            droplet.y * noiseScale) - .5;
+            x * noiseScale + radius,
+            y * noiseScale + radius) - .5;
         const dy = cubicNoiseSample2(yFlow,
-            droplet.x * noiseScale,
-            droplet.y * noiseScale + shift) - .5;
+            x * noiseScale + radius,
+            y * noiseScale + radius) - .5;
 
         droplet.x += dx * speed;
         droplet.y += dy * speed;
     }
 
-    context.fillStyle = "rgba(204,116,47,0.01)";
+    context.fillStyle = "hsla(" + hue1 + "," + s + "," + l + ",.01)";
     context.strokeStyle = "rgba(255,255,255,0.16)";
     context.stroke();
     context.fill();
