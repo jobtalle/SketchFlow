@@ -111,7 +111,7 @@ for (const droplet of droplets) {
     context.fill();
 }
 
-context.globalCompositeOperation = "xor";
+context.globalCompositeOperation = "source-over";
 context.fillStyle = "rgba(255,255,255,0.42)";
 
 for (const dot of dots) {
