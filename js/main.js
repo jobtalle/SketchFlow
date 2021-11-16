@@ -1,4 +1,9 @@
+const wrapper = document.getElementById("wrapper");
 const renderer = document.getElementById("renderer");
+
+renderer.width = wrapper.clientWidth;
+renderer.height = wrapper.clientHeight;
+
 const width = renderer.width;
 const height = renderer.height;
 const context = renderer.getContext("2d");
@@ -23,8 +28,8 @@ const steps = 3000;
 const speed = 20;
 const noiseScale = .0027;
 
-const xFlow = cubicNoiseConfig(Math.random());
-const yFlow = cubicNoiseConfig(Math.random());
+const xFlow = cubicNoiseConfig(fxrand());
+const yFlow = cubicNoiseConfig(fxrand());
 const droplets = [];
 
 for (let i = 0; i < dropletCount; ++i) {
@@ -65,19 +70,3 @@ for (const droplet of droplets) {
     context.stroke();
     context.fill();
 }
-
-// const overlay = context.createRadialGradient(
-//     width * .5,
-//     height * .5,
-//     512,
-//     width * .5,
-//     height * .5,
-//     Math.sqrt(1024 * 1024 + 1024 * 1024));
-//
-// overlay.addColorStop(0, "rgba(0, 0, 0,0)");
-// overlay.addColorStop(1, "rgb(0,0,0)");
-//
-// context.fillStyle = overlay;
-// context.beginPath();
-// context.rect(0, 0, width, height);
-// context.fill();
