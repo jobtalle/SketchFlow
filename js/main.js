@@ -26,7 +26,7 @@ const l = "48%";
 const tilt = (random.getFloat() < .5 ? -1 : 1) * (.08 + random.getFloat() * .05);
 
 gradient.addColorStop(0, "hsl(" + Math.round(hue1).toString() + ",50%," + l + ")");
-gradient.addColorStop(.0015, "hsl(" + Math.round(hue2).toString() + "," + s + ",20%)");
+gradient.addColorStop(.0015, "hsl(" + Math.round(hue2).toString() + "," + s + ",40%)");
 gradient.addColorStop(1, "hsl(" + Math.round(hue2).toString() + "," + s + ",1%)");
 
 context.scale(scale, scale);
@@ -74,9 +74,10 @@ for (let i = 0; i < dropletCount; ++i) {
 }
 
 const overlayScale = 2;
-let overlay = context.createRadialGradient(0, diamondCore, 0, 0, diamondCore, diamondY * overlayScale);
-overlay.addColorStop(0, "rgba(255,255,255,0.75)");
-overlay.addColorStop(1, "rgba(255,255,255,0)");
+const ld = "80%";
+let overlay = context.createRadialGradient(0, -diamondCore, 0, 0, -diamondCore, diamondY * overlayScale);
+overlay.addColorStop(0, "hsla(" + hue1 + "," + s + "," + ld + ",1)");
+overlay.addColorStop(1, "hsla(" + hue1 + "," + s + "," + ld + ",0)");
 
 context.globalCompositeOperation = "lighten";
 context.fillStyle = overlay;
@@ -87,9 +88,9 @@ context.lineTo(0, diamondCore);
 context.closePath();
 context.fill();
 
-overlay = context.createRadialGradient(0, diamondCore, 0, 0, diamondCore, diamondY * overlayScale);
-overlay.addColorStop(0, "rgba(255,255,255,0.42)");
-overlay.addColorStop(1, "rgba(255,255,255,0)");
+overlay = context.createRadialGradient(0, -diamondCore, 0, 0, -diamondCore, diamondY * overlayScale);
+overlay.addColorStop(0, "hsla(" + hue1 + "," + s + "," + ld + ",.8)");
+overlay.addColorStop(1, "hsla(" + hue1 + "," + s + "," + ld + ",0)");
 
 context.fillStyle = overlay;
 context.beginPath();
@@ -105,9 +106,9 @@ context.lineTo(0, diamondCore);
 context.closePath();
 context.fill();
 
-overlay = context.createRadialGradient(0, diamondCore, 0, 0, diamondCore, diamondY * overlayScale);
-overlay.addColorStop(0, "rgba(255,255,255,0.18)");
-overlay.addColorStop(1, "rgba(255,255,255,0)");
+overlay = context.createRadialGradient(0, -diamondCore, 0, 0, -diamondCore, diamondY * overlayScale);
+overlay.addColorStop(0, "hsla(" + hue1 + "," + s + "," + ld + ",.5)");
+overlay.addColorStop(1, "hsla(" + hue1 + "," + s + "," + ld + ",0)");
 
 context.fillStyle = overlay;
 context.beginPath();
